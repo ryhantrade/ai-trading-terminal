@@ -1,0 +1,8 @@
+flask
+numpy
+pandas
+einops
+huggingface_hub
+safetensors
+tqdm
+https://download.pytorch.org/whl/cpu/torch-2.9.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl
