@@ -27,6 +27,14 @@ _jobs = {}   # key -> {status, result, started}
 def _get_predictor():
     global _predictor
     if _predictor is None:
+        import torch
+        # Constrained containers (e.g. Render Free 0.1 CPU): torch defaults to
+        # host core count and thrashes. Pin threads for predictable speed.
+        try:
+            torch.set_num_threads(2)
+            torch.set_num_interop_threads(2)
+        except Exception:
+            pass
         from model import Kronos, KronosTokenizer, KronosPredictor
         tok = KronosTokenizer.from_pretrained(TOK_DIR)
         mdl = Kronos.from_pretrained(MODEL_DIR)
