@@ -76,7 +76,7 @@ def api_debate():
     fc = None
     if _forecast is not None:
         closes = [c["c"] for c in data["candles"]]
-        fc = _forecast.forecast_async(symbol, closes, n_paths=5, pred_len=24)
+        fc = _forecast.forecast_async(symbol, closes, n_paths=3, pred_len=24)
     return jsonify(analysts.debate(symbol, data["candles"], fc))
 
 
