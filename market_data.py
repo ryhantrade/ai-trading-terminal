@@ -167,15 +167,20 @@ def _kraken_pairs():
 def resolve_pair(symbol):
     """Map 'BTC' -> Kraken pair key like 'XXBTZUSD'."""
     sym = symbol.upper()
+    kraken_sym = {"BTC": "XBT"}.get(sym, sym)  # Kraken lists BTC as XBT
     pairs = _kraken_pairs()
+    # 1. exact altname match: XBTUSD, ETHUSD, ...
     for key, meta in pairs.items():
-        base = meta.get("base", "")
-        quote = meta.get("quote", "")
-        alt = meta.get("altname", "")
-        if quote == "ZUSD" and (alt.upper() == sym + "USD" or base.upper().rstrip("XZ") == sym or alt.upper().rstrip("USD") == sym):
+        if meta.get("quote") == "ZUSD" and meta.get("altname", "").upper() == kraken_sym + "USD":
             return key
+    # 2. normalized base-code match (strip Kraken's X/Z prefixes)
     for key, meta in pairs.items():
-        if meta.get("quote") == "ZUSD" and sym in meta.get("altname", "").upper():
+        if meta.get("quote") != "ZUSD":
+            continue
+        base = meta.get("base", "").upper()
+        norm = base[1:] if base.startswith("X") and len(base) > 3 else base
+        norm = norm[1:] if norm.startswith("Z") and len(norm) > 3 else norm
+        if norm in (kraken_sym, sym):
             return key
     return None
 
