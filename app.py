@@ -63,7 +63,7 @@ def api_forecast():
         return jsonify({"status": "error",
                         "error": data.get("error", "not enough candles")}), 502
     closes = [c["c"] for c in data["candles"]]
-    job = _forecast.forecast_async(symbol, closes, n_paths=5, pred_len=24)
+    job = _forecast.forecast_async(symbol, closes, n_paths=3, pred_len=24)
     return jsonify(job)
 
 
